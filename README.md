@@ -2,26 +2,57 @@
 
 # RTL88x2CE dkms module driver
 
-Download complete driver package with guides [from this repo](https://github.com/XAIOThaifeng/realtek-linux/tree/master/RTL8822CE).
+This driver is for MateBook13 Ubuntu 18, other MateBook using RTL8822CE PCIe may also be working, but I have not tested yet.
 
-## Instalación
 
-### [PatoJAD Repo](https://patojad.com.ar/repositorio/) (desactualizado)
+## Installation
+
+### Dependencies
+
+If you are installing the Wi-Fi driver from a fresh Ubuntu, **first connect to a mobile phone hotpot through Bluetooth** and update apt, then install dkms.
+
+- Connect mobile phone to the laptop through Bluetooth
+- Open laptop's quick link menu from the top right conner, *connect to internet* through mobile phone. Now the laptop is connecting to internet
+- Open a terminal:
 ```
-echo 'deb https://gitlab.com/patojad/repository/raw/patojad/debs/ patojad main
-' | sudo tee /etc/apt/sources.list.d/patojad.list
+sudo apt update
+sudo apt install dkms
+```
+
+### Build and install
+
+- [Download this repository](https://github.com/ZuyuanZhu/rtl88x2ce-dkms) as a zip file from anyother PC, and unzip it to the laptop's Document folder.
+- In the Document folder, open a terminal:
+```
+sudo cp rtl88x2ce-dkms/rtw88_blacklist.conf /etc/modprobe.d/rtw88_blacklist.conf
+sudo mkdir /usr/src/rtl88x2ce-35403
+sudo cp -Rv rtl88x2ce-dkms/* /usr/src/rtl88x2ce-35403/
+sudo dkms add -m rtl88x2ce -v 35403
+sudo dkms build -m rtl88x2ce -v 35403
+sudo dkms install -m rtl88x2ce -v 35403
+```
+After finishing these steps, then reboot the laptop, the Wi-Fi should be working then.
+
+
+## Other installation methods
+
+IF your laptop already have access to the internet(eg., via ethernet cable), then you could try any one of the methods bellow:
+
+### [PatoJAD Repo](https://patojad.com.ar/repositorio/) (outdated)
+```
+echo 'deb https://gitlab.com/patojad/repository/raw/patojad/debs/ patojad main' | sudo tee /etc/apt/sources.list.d/patojad.list
 wget -qO - https://gitlab.com/LynxOS/repository/raw/lynxos/LynxPub.gpg | apt-key add -
 sudo apt update
 sudo apt install rtl88x2ce-dkms
 ```
 
-### Paquete deb
+### Deb package
 ```
 wget https://github.com/juanro49/rtl88x2ce-dkms/releases/download/5.7.3_35403_20210523/rtl88x2ce-dkms_35403_amd64.deb
 sudo dpkg -i rtl88x2ce-dkms_35403_amd64.deb
 ```
 
-### Desde código fuente
+### Install from source
 ```
 git clone https://github.com/juanro49/rtl88x2ce-dkms.git
 sudo cp rtl88x2ce-dkms/rtw88_blacklist.conf /etc/modprobe.d/rtw88_blacklist.conf
@@ -32,17 +63,13 @@ sudo dkms build -m rtl88x2ce -v 35403
 sudo dkms install -m rtl88x2ce -v 35403
 ```
 
-## Iniciar módulo
-
+### Enable module
+Enable the driver:
 `sudo modprobe rtl88x2ce`
+If not working, just reboot to make your life easy. Or, just continue Google if you like :)
 
 
-Driver testeado en:
+### Notes
+- *Network controller: Realtek Semiconductor Co., Ltd. RTL8822CE 802.11ac PCIe Wireless Network Adapter*
 
-[MSI Alpha 15](https://instatecno.com/review-portatil-msi-alpha-15-a3ddk/) con [SparkyLinux Rolling](https://sparkylinux.org/)
-
-Network controller: Realtek Semiconductor Co., Ltd. RTL8822CE 802.11ac PCIe Wireless Network Adapter
-
-## Donaciones
-[<img src="https://coindrop.to/embed-button.png" border-radius="10px" height="57" width="200px" alt="Coindrop.to me">](https://coindrop.to/juanro49) [<img alt="Donate using Liberapay" border-radius="10px" height="57" width="200px" src="https://liberapay.com/assets/widgets/donate.svg">](https://liberapay.com/juanro49/donate)
-
+- *Soure and more driver could be downloaded with guides [from this repo](https://github.com/XAIOThaifeng/realtek-linux/tree/master/RTL8822CE).*
